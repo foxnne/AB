@@ -8,6 +8,7 @@ pub fn system() ecs.system_desc_t {
     var desc: ecs.system_desc_t = .{};
     desc.query.filter.terms[0] = .{ .id = ecs.id(components.Jump) };
     desc.query.filter.terms[1] = .{ .id = ecs.id(components.Position) };
+    desc.query.filter.terms[2] = .{ .id = ecs.id(components.Player), .oper = ecs.oper_kind_t.Optional };
     desc.run = run;
     return desc;
 }
@@ -26,12 +27,22 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
 
                     if (jumps[i].elapsed >= 1.0) {
                         ecs.remove(world, entity, components.Jump);
+
+                        if (ecs.field(it, components.Player, 3)) |players| {
+                            players[i].state = .run;
+                        }
+                    } else {
+                        if (ecs.field(it, components.Player, 3)) |players| {
+                            players[i].state = .idle;
+                        }
                     }
 
                     if (jumps[i].elapsed <= 0.5) {
                         positions[i].y = game.math.ease(game.settings.ground_height, game.settings.ground_height + 64.0, jumps[i].elapsed * 2.0, .ease_out);
+                        jumps[i].tail_offset = -2.5;
                     } else {
                         positions[i].y = game.math.ease(game.settings.ground_height + 64.0, game.settings.ground_height, (jumps[i].elapsed - 0.5) * 2.0, .ease_in);
+                        jumps[i].tail_offset = 2.5;
                     }
                 }
             }

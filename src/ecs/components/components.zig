@@ -2,7 +2,14 @@ const zmath = @import("zmath");
 const game = @import("../../ab.zig");
 
 pub const Visible = struct {};
-pub const Player = struct {};
+pub const Player = struct {
+    state: State = .idle,
+
+    pub const State = enum {
+        idle,
+        run,
+    };
+};
 
 pub const Jump = struct {
     elapsed: f32 = 0.0,

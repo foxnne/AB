@@ -14,6 +14,7 @@ pub fn system() ecs.system_desc_t {
     desc.query.filter.terms[2] = .{ .id = ecs.id(components.SpriteRenderer), .oper = ecs.oper_kind_t.Optional };
     desc.query.filter.terms[3] = .{ .id = ecs.id(components.ParticleRenderer), .oper = ecs.oper_kind_t.Optional };
     desc.query.filter.terms[4] = .{ .id = ecs.id(components.PlayerRenderer), .oper = ecs.oper_kind_t.Optional };
+    desc.query.filter.terms[5] = .{ .id = ecs.id(components.Jump), .oper = ecs.oper_kind_t.Optional };
     desc.query.order_by_component = ecs.id(components.Position);
     desc.query.order_by = orderBy;
     desc.run = run;
@@ -83,6 +84,12 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                 }
 
                 if (ecs.field(it, components.PlayerRenderer, 5)) |renderers| {
+                    var tail_offset = @sin(time);
+
+                    if (ecs.field(it, components.Jump, 6)) |jumps| {
+                        tail_offset = jumps[i].tail_offset;
+                    }
+
                     game.state.batcher.sprite(
                         position,
                         &game.state.diffusemap,
@@ -107,7 +114,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             .color = renderers[i].color,
                             .vert_mode = .left_sway,
                             .frag_mode = renderers[i].frag_mode,
-                            .time = time,
+                            .time = tail_offset,
                             .flip_x = renderers[i].flip_x,
                             .flip_y = renderers[i].flip_y,
                             .scale = renderers[i].scale,
