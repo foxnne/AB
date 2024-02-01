@@ -35,11 +35,9 @@ struct VertexOut {
 
     if (vert_mode == 2) {
         var vert_ind = i32(in_vertex_index) % 4;
-        if (vert_ind == 0) {
+        if (vert_ind == 0 || vert_ind == 3) {
             pos.y += time * 1.5;
-        } else if (vert_ind == 3) {
-            pos.y += time * 2.0;
-        }
+        } 
     }
     
     output.position_clip = vec4(pos.xy, 0.0, 1.0) * uniforms.mvp;

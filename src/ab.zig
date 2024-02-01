@@ -316,7 +316,7 @@ pub fn init(app: *App) !void {
 
     state.entities.player = ecs.new_id(state.world);
     _ = ecs.add(state.world, state.entities.player, components.Player);
-    _ = ecs.set(state.world, state.entities.player, components.Position, .{ .x = 0.0, .y = settings.ground_height, .z = 1.0 });
+    _ = ecs.set(state.world, state.entities.player, components.Position, .{ .x = 0.0, .y = settings.ground_height, .z = -20.0 });
     _ = ecs.set(state.world, state.entities.player, components.PlayerRenderer, .{
         .index_body = assets.ab_atlas.character_idle_0_main,
         .index_tail = assets.ab_atlas.character_idle_1_tail,
