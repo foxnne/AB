@@ -15,3 +15,5 @@ pub const tile_size: f32 = 32.0;
 
 /// Height where ground sits
 pub const ground_height: f32 = -48.0;
+
+pub const scroll_speed: f32 = 100.0;

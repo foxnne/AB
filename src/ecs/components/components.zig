@@ -8,12 +8,17 @@ pub const Player = struct {
     pub const State = enum {
         idle,
         run,
+        jump,
     };
 };
 
 pub const Jump = struct {
     elapsed: f32 = 0.0,
     tail_offset: f32 = 0.0,
+};
+
+pub const Scroll = struct {
+    width: f32,
 };
 pub const Request = struct {};
 pub const Target = struct {};

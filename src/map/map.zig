@@ -17,6 +17,8 @@ pub fn load() void {
 
     var count: usize = @intFromFloat(@ceil(world_width / game.settings.tile_size) * 4.0);
 
+    const width = @as(f32, @floatFromInt(count)) * game.settings.tile_size;
+
     for (0..count) |index| {
         const i: f32 = @floatFromInt(index);
         const offset: f32 = (i - (@as(f32, @floatFromInt(count))) / 2.0) * game.settings.tile_size + (game.settings.tile_size / 2.0);
@@ -29,5 +31,6 @@ pub fn load() void {
             .index = sprite_index,
             .flip_x = if (@mod(index, 4) == 0) true else false,
         });
+        _ = ecs.set(game.state.world, ground, game.components.Scroll, .{ .width = width });
     }
 }

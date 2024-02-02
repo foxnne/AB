@@ -269,50 +269,28 @@ pub fn init(app: *App) !void {
     // - Input
     var input_jump_system = @import("ecs/systems/input_jump.zig").system();
     ecs.SYSTEM(state.world, "InputJumpSystem", ecs.OnUpdate, &input_jump_system);
-    // var input_scoop_system = @import("ecs/systems/input_scoop.zig").system();
-    // ecs.SYSTEM(state.world, "InputScoopSystem", ecs.OnUpdate, &input_scoop_system);
 
+    // - Gameplay
     var cooldown_system = @import("ecs/systems/cooldown.zig").system();
     ecs.SYSTEM(state.world, "CooldownSystem", ecs.OnUpdate, &cooldown_system);
     var jump_system = @import("ecs/systems/jump.zig").system();
     ecs.SYSTEM(state.world, "JumpSystem", ecs.OnUpdate, &jump_system);
-    // var camera_system = @import("ecs/systems/camera.zig").system();
-    // ecs.SYSTEM(state.world, "CameraSystem", ecs.OnUpdate, &camera_system);
+    var scroll_system = @import("ecs/systems/scroll.zig").system();
+    ecs.SYSTEM(state.world, "ScrollSystem", ecs.OnUpdate, &scroll_system);
 
     // - Animation
     var animation_sprite_system = @import("ecs/systems/animation_sprite.zig").system();
     ecs.SYSTEM(state.world, "AnimationSpriteSystem", ecs.OnUpdate, &animation_sprite_system);
     var animation_player_system = @import("ecs/systems/animation_player.zig").system();
     ecs.SYSTEM(state.world, "AnimationPlayerSystem", ecs.OnUpdate, &animation_player_system);
-    // var bird_system = @import("ecs/systems/bird.zig").system();
-    // ecs.SYSTEM(state.world, "BirdSystem", ecs.OnUpdate, &bird_system);
-    // var rainbow_system = @import("ecs/systems/rainbow.zig").system();
-    // ecs.SYSTEM(state.world, "RainbowSystem", ecs.OnUpdate, &rainbow_system);
-    // var animation_hitpoints_system = @import("ecs/systems/animation_hitpoints.zig").system();
-    // ecs.SYSTEM(state.world, "AnimationHitpointsSystem", ecs.OnUpdate, &animation_hitpoints_system);
-    // var animation_direction_system = @import("ecs/systems/animation_direction.zig").system();
-    // ecs.SYSTEM(state.world, "AnimationDirectionSystem", ecs.OnUpdate, &animation_direction_system);
-    // var animation_particle_system = @import("ecs/systems/animation_particle.zig").system();
-    // ecs.SYSTEM(state.world, "AnimationParticleSystem", ecs.OnUpdate, &animation_particle_system);
 
-    // - Render
-    // var render_culling_system = @import("ecs/systems/render_culling.zig").system();
-    // ecs.SYSTEM(state.world, "RenderCullingSystem", ecs.PostUpdate, &render_culling_system);
+    // - Rendering
     var render_diffuse_system = @import("ecs/systems/render_diffuse_pass.zig").system();
     ecs.SYSTEM(state.world, "RenderDiffuseSystem", ecs.PostUpdate, &render_diffuse_system);
     var render_final_system = @import("ecs/systems/render_final_pass.zig").system();
     ecs.SYSTEM(state.world, "RenderFinalSystem", ecs.PostUpdate, &render_final_system);
 
-    // var parallax_system = @import("ecs/systems/parallax.zig").system();
-    // ecs.SYSTEM(state.world, "ParallaxSystem", ecs.PostUpdate, &parallax_system);
-
     map.load();
-
-    // const tracks = ecs.new_id(state.world);
-    // _ = ecs.set(state.world, tracks, components.Position, .{ .x = 0.0, .y = settings.ground_height, .z = 1.0 });
-    // _ = ecs.set(state.world, tracks, components.SpriteRenderer, .{
-    //     .index = assets.scoopems_atlas.Excavator_rotate_empty_0_Tracks,
-    // });
 
     state.entities.player = ecs.new_id(state.world);
     _ = ecs.add(state.world, state.entities.player, components.Player);
@@ -328,33 +306,6 @@ pub fn init(app: *App) !void {
         .state = .play,
     });
     _ = ecs.set(state.world, state.entities.player, components.Direction, .e);
-    // _ = ecs.set(state.world, state.entities.player, components.ExcavatorState, .empty);
-    // _ = ecs.set_pair(state.world, state.entities.player, ecs.id(components.Target), ecs.id(components.Direction), components.Direction, .w);
-    // _ = ecs.set(state.world, state.entities.player, components.ParticleRenderer, .{
-    //     .particles = try allocator.alloc(components.ParticleRenderer.Particle, 100),
-    //     .offset = .{ 23.0, 46.0, 0.0, 0.0 },
-    // });
-
-    // _ = ecs.set(state.world, state.entities.player, components.ParticleAnimator, .{
-    //     .animation = &animations.Smoke_Layer,
-    //     .rate = 3.0,
-    //     .velocity_min = .{ -2.0, 25.0 },
-    //     .velocity_max = .{ 2.0, 50.0 },
-    //     .start_life = 1.0,
-    //     .start_color = .{ 0.6, 0.6, 0.6, 1.0 },
-    //     .end_color = .{ 1.0, 1.0, 1.0, 0.5 },
-    // });
-
-    // state.entities.character = ecs.new_id(state.world);
-    // _ = ecs.set(state.world, state.entities.character, components.Position, .{ .x = 0.0, .y = settings.ground_height, .z = 0.5 });
-    // _ = ecs.set(state.world, state.entities.character, components.SpriteRenderer, .{
-    //     .index = assets.scoopems_atlas.Excavator_rotate_empty_0_Arlynn,
-    // });
-    // _ = ecs.set(state.world, state.entities.character, components.SpriteAnimator, .{
-    //     .animation = &animations.Excavator_scoop_Arlynn,
-    //     .fps = 12,
-    // });
-    // _ = ecs.set(state.world, state.entities.character, components.Direction, .w);
 }
 
 pub fn updateMainThread(_: *App) !bool {
@@ -451,13 +402,13 @@ pub fn deinit(_: *App) void {
     core.deinit();
 }
 
-var idle_i: usize = 0;
-var rev_i: usize = 0;
-var release_i: usize = 0;
-var birds_i: usize = 0;
-var sparkles_i: usize = 0;
-var rev_swap: usize = 0;
-var music_i: usize = 0;
+// var idle_i: usize = 0;
+// var rev_i: usize = 0;
+// var release_i: usize = 0;
+// var birds_i: usize = 0;
+// var sparkles_i: usize = 0;
+// var rev_swap: usize = 0;
+// var music_i: usize = 0;
 fn writeCallback(_: ?*anyopaque, frames: usize) void {
     for (0..frames) |_| {
         // const channels = state.sounds.engine_idle.channels;

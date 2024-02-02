@@ -21,12 +21,12 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                 if (ecs.field(it, components.PlayerRenderer, 2)) |renderers| {
                     if (ecs.field(it, components.Player, 3)) |players| {
                         animators[i].animation_body = switch (players[i].state) {
-                            .idle => &game.animations.character_idle_main,
+                            .idle, .jump => &game.animations.character_idle_main,
                             .run => &game.animations.character_run_main,
                         };
 
                         animators[i].fps = switch (players[i].state) {
-                            .idle => 8,
+                            .idle, .jump => 8,
                             .run => 14,
                         };
                     }

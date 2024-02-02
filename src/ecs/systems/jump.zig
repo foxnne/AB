@@ -33,7 +33,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                         }
                     } else {
                         if (ecs.field(it, components.Player, 3)) |players| {
-                            players[i].state = .idle;
+                            players[i].state = .jump;
                         }
                     }
 
