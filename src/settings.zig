@@ -13,6 +13,8 @@ pub const design_size = zm.f32x4(@floatFromInt(design_width), @floatFromInt(desi
 /// Tile size
 pub const tile_size: f32 = 32.0;
 
+pub const cloud_spacing: f32 = 240.0;
+
 /// Height where ground sits
 pub const ground_height: f32 = -48.0;
 

@@ -16,22 +16,22 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
     const world = it.world;
 
     if (ecs.get(world, game.state.entities.player, components.Player)) |player| {
-        if (player.state == .idle) return;
-    }
+        while (ecs.iter_next(it)) {
+            var i: usize = 0;
+            while (i < it.count()) : (i += 1) {
+                const entity = it.entities()[i];
+                _ = entity;
 
-    while (ecs.iter_next(it)) {
-        var i: usize = 0;
-        while (i < it.count()) : (i += 1) {
-            const entity = it.entities()[i];
-            _ = entity;
+                if (ecs.field(it, components.Scroll, 1)) |scrolls| {
+                    if (player.state == .idle and scrolls[i].wait_on_player == true) continue;
 
-            if (ecs.field(it, components.Scroll, 1)) |scrolls| {
-                if (ecs.field(it, components.Position, 2)) |positions| {
-                    if (positions[i].x <= -scrolls[i].width / 2.0) {
-                        positions[i].x += scrolls[i].width;
+                    if (ecs.field(it, components.Position, 2)) |positions| {
+                        if (positions[i].x <= -scrolls[i].width / 2.0) {
+                            positions[i].x += scrolls[i].width;
+                        }
+
+                        positions[i].x = @floor(positions[i].x - (game.state.delta_time * scrolls[i].speed));
                     }
-
-                    positions[i].x = @floor(positions[i].x - (game.state.delta_time * game.settings.scroll_speed));
                 }
             }
         }

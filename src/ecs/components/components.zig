@@ -18,7 +18,9 @@ pub const Jump = struct {
 };
 
 pub const Scroll = struct {
+    speed: f32 = game.settings.scroll_speed,
     width: f32,
+    wait_on_player: bool = true,
 };
 pub const Request = struct {};
 pub const Target = struct {};

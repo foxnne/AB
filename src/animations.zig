@@ -2,6 +2,12 @@
 const std = @import("std");
 const assets = @import("assets.zig");
 
+pub var light_big_main = [_]usize {
+    assets.ab_atlas.light_big_0_main,
+};
+pub var light_small_main = [_]usize {
+    assets.ab_atlas.light_small_0_main,
+};
 pub var character_idle_tail = [_]usize {
     assets.ab_atlas.character_idle_0_tail,
     assets.ab_atlas.character_idle_1_tail,
@@ -45,4 +51,13 @@ pub var grass_assorted_main = [_]usize {
     assets.ab_atlas.grass_assorted_3_main,
     assets.ab_atlas.grass_assorted_4_main,
     assets.ab_atlas.grass_assorted_5_main,
+};
+pub var cloud_1_main = [_]usize {
+    assets.ab_atlas.cloud_1_0_main,
+};
+pub var cloud_2_main = [_]usize {
+    assets.ab_atlas.cloud_2_0_main,
+};
+pub var sun_main = [_]usize {
+    assets.ab_atlas.sun_0_main,
 };
