@@ -1,5 +1,6 @@
 # AB
-<img width="1392" alt="Screenshot 2024-01-31 at 3 22 43 PM" src="https://github.com/foxnne/AB/assets/49629865/72856022-0fc8-4f89-8769-0f6caf2ac460">
+<img width="1392" alt="image" src="https://github.com/foxnne/AB/assets/49629865/53bc84b0-cf1e-4d0b-b5cb-958a8084267d">
+
 
 This is a little game I'm making for my youngest daughter's 3rd birthday. 
 
