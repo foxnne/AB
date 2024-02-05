@@ -8,6 +8,42 @@ pub var light_big_main = [_]usize {
 pub var light_small_main = [_]usize {
     assets.ab_atlas.light_small_0_main,
 };
+pub var oak_needles = [_]usize {
+    assets.ab_atlas.oak_0_needles,
+};
+pub var pine_needles = [_]usize {
+    assets.ab_atlas.pine_0_needles,
+};
+pub var oak_leaves01 = [_]usize {
+    assets.ab_atlas.oak_0_leaves01,
+};
+pub var pine_leaves01 = [_]usize {
+    assets.ab_atlas.pine_0_leaves01,
+};
+pub var oak_leaves02 = [_]usize {
+    assets.ab_atlas.oak_0_leaves02,
+};
+pub var pine_leaves02 = [_]usize {
+    assets.ab_atlas.pine_0_leaves02,
+};
+pub var oak_leaves03 = [_]usize {
+    assets.ab_atlas.oak_0_leaves03,
+};
+pub var pine_leaves03 = [_]usize {
+    assets.ab_atlas.pine_0_leaves03,
+};
+pub var oak_leaves04 = [_]usize {
+    assets.ab_atlas.oak_0_leaves04,
+};
+pub var pine_leaves04 = [_]usize {
+    assets.ab_atlas.pine_0_leaves04,
+};
+pub var oak_trunk = [_]usize {
+    assets.ab_atlas.oak_0_trunk,
+};
+pub var pine_trunk = [_]usize {
+    assets.ab_atlas.pine_0_trunk,
+};
 pub var character_idle_tail = [_]usize {
     assets.ab_atlas.character_idle_0_tail,
     assets.ab_atlas.character_idle_1_tail,

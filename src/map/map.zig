@@ -89,4 +89,41 @@ pub fn load() void {
             _ = ecs.set(game.state.world, grass, game.components.Scroll, .{ .width = width });
         }
     }
+
+    { // Create trees
+        var rand = std.rand.DefaultPrng.init(1239848752);
+        var random = rand.random();
+
+        var count: usize = @intFromFloat(@ceil(world_width / game.settings.tile_size));
+        const width = @as(f32, @floatFromInt(count)) * game.settings.tile_size;
+
+        for (0..count) |index| {
+            const i: f32 = @floatFromInt(index);
+            const offset: f32 = (i - (@as(f32, @floatFromInt(count))) / 2.0) * game.settings.tile_size + (game.settings.tile_size / 2.0);
+
+            if (random.float(f32) < 0.9 or (offset > camera_tl[0] + 128.0 and offset < camera_br[0] - 128.0)) continue;
+
+            const trunk = ecs.new_id(game.state.world);
+
+            _ = ecs.set(game.state.world, trunk, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = -100.0 });
+            _ = ecs.set(game.state.world, trunk, game.components.SpriteRenderer, .{
+                .index = game.assets.ab_atlas.pine_0_trunk,
+                .vert_mode = .top_sway,
+                .order = index,
+            });
+            _ = ecs.set(game.state.world, trunk, game.components.Scroll, .{ .width = width });
+
+            const leaves = ecs.new_id(game.state.world);
+
+            _ = ecs.set(game.state.world, leaves, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = -101.0 });
+            _ = ecs.set(game.state.world, leaves, game.components.SpriteRenderer, .{
+                .index = game.assets.ab_atlas.pine_0_needles,
+                .frag_mode = .palette,
+                .vert_mode = .top_sway,
+                .color = game.math.Color.initBytes(6, 0, 0, 255).toSlice(),
+                .order = index,
+            });
+            _ = ecs.set(game.state.world, leaves, game.components.Scroll, .{ .width = width });
+        }
+    }
 }
