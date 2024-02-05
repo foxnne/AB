@@ -31,9 +31,7 @@ pub fn load() void {
     }
 
     { // Create clouds
-
         var count: usize = @intFromFloat(@ceil(world_width / game.settings.cloud_spacing));
-
         const width = @as(f32, @floatFromInt(count)) * game.settings.cloud_spacing;
 
         for (0..count) |index| {
@@ -54,7 +52,6 @@ pub fn load() void {
 
     { // Create ground tiles
         var count: usize = @intFromFloat(@ceil(world_width / game.settings.tile_size));
-
         const width = @as(f32, @floatFromInt(count)) * game.settings.tile_size;
 
         for (0..count) |index| {
@@ -70,6 +67,26 @@ pub fn load() void {
                 .flip_x = if (@mod(index, 4) == 0) true else false,
             });
             _ = ecs.set(game.state.world, ground, game.components.Scroll, .{ .width = width });
+        }
+    }
+
+    { // Create grass
+        var count: usize = @intFromFloat(@ceil(world_width / 10.0));
+        const width = @as(f32, @floatFromInt(count)) * 10.0;
+
+        for (0..count) |index| {
+            const i: f32 = @floatFromInt(index);
+            const offset: f32 = (i - (@as(f32, @floatFromInt(count))) / 2.0) * 10.0 + (10.0 / 2.0);
+            const sprite_index: usize = game.animations.grass_assorted_main[@intFromFloat(@mod(i, @as(f32, @floatFromInt(game.animations.grass_assorted_main.len))))];
+
+            const grass = ecs.new_id(game.state.world);
+
+            _ = ecs.set(game.state.world, grass, game.components.Position, .{ .x = offset, .y = game.settings.ground_height });
+            _ = ecs.set(game.state.world, grass, game.components.SpriteRenderer, .{
+                .index = sprite_index,
+                .vert_mode = .top_sway,
+            });
+            _ = ecs.set(game.state.world, grass, game.components.Scroll, .{ .width = width });
         }
     }
 }

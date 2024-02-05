@@ -58,7 +58,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             .color = renderers[i].color,
                             .vert_mode = renderers[i].vert_mode,
                             .frag_mode = renderers[i].frag_mode,
-                            .time = game.state.time + @as(f32, @floatFromInt(renderers[i].order)) + position[0],
+                            .time = time,
                             .flip_x = renderers[i].flip_x,
                             .flip_y = renderers[i].flip_y,
                             .scale = renderers[i].scale,
