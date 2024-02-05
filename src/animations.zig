@@ -44,6 +44,12 @@ pub var oak_trunk = [_]usize {
 pub var pine_trunk = [_]usize {
     assets.ab_atlas.pine_0_trunk,
 };
+pub var oak_Ground = [_]usize {
+    assets.ab_atlas.oak_0_Ground,
+};
+pub var pine_Ground = [_]usize {
+    assets.ab_atlas.pine_0_Ground,
+};
 pub var character_idle_tail = [_]usize {
     assets.ab_atlas.character_idle_0_tail,
     assets.ab_atlas.character_idle_1_tail,
@@ -96,4 +102,10 @@ pub var cloud_2_main = [_]usize {
 };
 pub var sun_main = [_]usize {
     assets.ab_atlas.sun_0_main,
+};
+pub var pine_mid_main = [_]usize {
+    assets.ab_atlas.pine_mid_0_main,
+};
+pub var pine_far_main = [_]usize {
+    assets.ab_atlas.pine_far_0_main,
 };

@@ -101,6 +101,28 @@ pub fn load() void {
             const i: f32 = @floatFromInt(index);
             const offset: f32 = (i - (@as(f32, @floatFromInt(count))) / 2.0) * game.settings.tile_size + (game.settings.tile_size / 2.0);
 
+            const pine_far = ecs.new_id(game.state.world);
+
+            _ = ecs.set(game.state.world, pine_far, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = 300.0 });
+            _ = ecs.set(game.state.world, pine_far, game.components.SpriteRenderer, .{
+                .index = game.assets.ab_atlas.pine_far_0_main,
+                .vert_mode = .top_sway,
+                .order = index,
+                .flip_x = if (@mod(index, 4) == 0) true else false,
+            });
+            _ = ecs.set(game.state.world, pine_far, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.1 });
+
+            const pine_mid = ecs.new_id(game.state.world);
+
+            _ = ecs.set(game.state.world, pine_mid, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = 200.0 });
+            _ = ecs.set(game.state.world, pine_mid, game.components.SpriteRenderer, .{
+                .index = game.assets.ab_atlas.pine_mid_0_main,
+                .vert_mode = .top_sway,
+                .order = index,
+                .flip_x = if (@mod(index, 4) == 0) true else false,
+            });
+            _ = ecs.set(game.state.world, pine_mid, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.5 });
+
             if (random.float(f32) < 0.9 or (offset > camera_tl[0] + 128.0 and offset < camera_br[0] - 128.0)) continue;
 
             const trunk = ecs.new_id(game.state.world);
