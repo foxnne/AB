@@ -19,7 +19,7 @@ pub fn load() void {
         _ = ecs.set(game.state.world, sunflare, game.components.Position, .{ .x = camera_br[0], .y = camera_tl[1], .z = 201.0 });
         _ = ecs.set(game.state.world, sunflare, game.components.SpriteRenderer, .{
             .index = game.assets.ab_atlas.light_big_0_main,
-            .color = game.math.Color.initFloats(1.0, 1.0, 0.3, 1.0).toSlice(),
+            .color = game.math.Color.initFloats(1.0, 1.0, 0.9, 1.0).toSlice(),
         });
 
         const sun = ecs.new_id(game.state.world);
@@ -41,14 +41,14 @@ pub fn load() void {
             const offset: f32 = (i - (@as(f32, @floatFromInt(count))) / 2.0) * game.settings.cloud_spacing + (game.settings.cloud_spacing / 2.0);
             const sprite_index: usize = if (@mod(index, 2) == 0) game.assets.ab_atlas.cloud_1_0_main else game.assets.ab_atlas.cloud_2_0_main;
 
-            const sky = ecs.new_id(game.state.world);
+            const cloud = ecs.new_id(game.state.world);
 
-            _ = ecs.set(game.state.world, sky, game.components.Position, .{ .x = offset, .y = game.settings.ground_height + 128.0 });
-            _ = ecs.set(game.state.world, sky, game.components.SpriteRenderer, .{
+            _ = ecs.set(game.state.world, cloud, game.components.Position, .{ .x = offset, .y = game.settings.ground_height + 128.0 });
+            _ = ecs.set(game.state.world, cloud, game.components.SpriteRenderer, .{
                 .index = sprite_index,
                 .flip_x = if (@mod(index, 4) == 0) true else false,
             });
-            _ = ecs.set(game.state.world, sky, game.components.Scroll, .{ .width = width, .speed = 20.0, .wait_on_player = false });
+            _ = ecs.set(game.state.world, cloud, game.components.Scroll, .{ .width = width, .speed = 10.0, .wait_on_player = false });
         }
     }
 
