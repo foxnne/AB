@@ -28,8 +28,8 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
     const uniforms = gfx.UniformBufferObject{ .mvp = zm.transpose(game.state.camera.renderTextureMatrix()) };
 
     const background: core.gpu.Color = .{
-        .r = 0.0,
-        .g = 0.8,
+        .r = 0.5,
+        .g = 1.0,
         .b = 1.0,
         .a = 0.0,
     };
