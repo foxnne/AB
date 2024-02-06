@@ -27,6 +27,7 @@ fn vert_main(
 
 @group(0) @binding(1) var diffuse: texture_2d<f32>;
 @group(0) @binding(2) var diffuse_sampler: sampler;
+@group(0) @binding(3) var blur: texture_2d<f32>;
 
 @fragment 
 fn frag_main(
@@ -34,7 +35,13 @@ fn frag_main(
     @location(1) color: vec4<f32>,
     @location(2) data: vec3<f32>,
 ) -> @location(0) vec4<f32> {
-    var diffuse = textureSample(diffuse, diffuse_sampler, uv);
 
-    return diffuse * color;
+    var diffuse = textureSample(diffuse, diffuse_sampler, uv);
+    var blur = textureSample(blur, diffuse_sampler, uv);
+
+    if (data[0] < 1.0) {
+        return diffuse * color;
+    } 
+
+    return blur * color;
 }

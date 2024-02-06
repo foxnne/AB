@@ -109,7 +109,7 @@ pub fn load() void {
                 //.vert_mode = .top_sway,
                 .order = index,
             });
-            _ = ecs.set(game.state.world, pine_far, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.1 });
+            _ = ecs.set(game.state.world, pine_far, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.2 });
 
             const pine_mid = ecs.new_id(game.state.world);
 

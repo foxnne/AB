@@ -37,8 +37,8 @@ const tile_dimension: u32 = 128;
 const batch: [2]u32 = .{ 4, 4 };
 
 // Currently hardcoded
-const filter_size: u32 = 15;
-const iterations: u32 = 2;
+const filter_size: u32 = 1;
+const iterations: u32 = 3;
 var block_dimension: u32 = tile_dimension - (filter_size - 1);
 
 test {
@@ -119,8 +119,8 @@ fn register(world: *ecs.world_t, comptime T: type) void {
 pub fn init(app: *App) !void {
     const allocator = gpa.allocator();
 
-    var buffer: [1024]u8 = undefined;
-    const root_path = std.fs.selfExeDirPath(buffer[0..]) catch ".";
+    var path_buffer: [1024]u8 = undefined;
+    const root_path = std.fs.selfExeDirPath(path_buffer[0..]) catch ".";
 
     state = try allocator.create(GameState);
     state.* = .{ .root_path = try allocator.dupeZ(u8, root_path) };
@@ -197,6 +197,11 @@ pub fn init(app: *App) !void {
         .attributes = &vertex_attributes,
     });
 
+    const sampler = core.device.createSampler(&.{
+        .mag_filter = .linear,
+        .min_filter = .linear,
+    });
+
     const blend = gpu.BlendState{
         .color = .{
             .operation = .add,
@@ -219,6 +224,80 @@ pub fn init(app: *App) !void {
 
     state.pipeline_blur = core.device.createComputePipeline(&blur_pipeline_descriptor);
     blur_shader_module.release();
+
+    // the shader blurs the input texture in one direction,
+    // depending on whether flip value is 0 or 1
+    var flip: [2]*gpu.Buffer = undefined;
+    for (flip, 0..) |_, i| {
+        const buffer = core.device.createBuffer(&.{
+            .usage = .{ .uniform = true },
+            .size = @sizeOf(u32),
+            .mapped_at_creation = .true,
+        });
+
+        const buffer_mapped = buffer.getMappedRange(u32, 0, 1);
+        buffer_mapped.?[0] = @as(u32, @intCast(i));
+        buffer.unmap();
+
+        flip[i] = buffer;
+    }
+
+    const blur_params_buffer = core.device.createBuffer(&.{
+        .size = 8,
+        .usage = .{ .copy_dst = true, .uniform = true },
+    });
+
+    const blur_bind_group_layout0 = state.pipeline_blur.getBindGroupLayout(0);
+    const blur_bind_group_layout1 = state.pipeline_blur.getBindGroupLayout(1);
+
+    const compute_constants = core.device.createBindGroup(&gpu.BindGroup.Descriptor.init(.{
+        .layout = blur_bind_group_layout0,
+        .entries = &.{
+            gpu.BindGroup.Entry.sampler(0, sampler),
+            gpu.BindGroup.Entry.buffer(1, blur_params_buffer, 0, 8),
+        },
+    }));
+
+    const compute_bind_group_0 = core.device.createBindGroup(&gpu.BindGroup.Descriptor.init(.{
+        .layout = blur_bind_group_layout1,
+        .entries = &.{
+            gpu.BindGroup.Entry.textureView(1, state.output_diffuse.view_handle),
+            gpu.BindGroup.Entry.textureView(2, state.blur_textures[0].view_handle),
+            gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4),
+        },
+    }));
+
+    const compute_bind_group_1 = core.device.createBindGroup(&gpu.BindGroup.Descriptor.init(.{
+        .layout = blur_bind_group_layout1,
+        .entries = &.{
+            gpu.BindGroup.Entry.textureView(1, state.blur_textures[0].view_handle),
+            gpu.BindGroup.Entry.textureView(2, state.blur_textures[1].view_handle),
+            gpu.BindGroup.Entry.buffer(3, flip[1], 0, 4),
+        },
+    }));
+
+    const compute_bind_group_2 = core.device.createBindGroup(&gpu.BindGroup.Descriptor.init(.{
+        .layout = blur_bind_group_layout1,
+        .entries = &.{
+            gpu.BindGroup.Entry.textureView(1, state.blur_textures[1].view_handle),
+            gpu.BindGroup.Entry.textureView(2, state.blur_textures[0].view_handle),
+            gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4),
+        },
+    }));
+
+    state.compute_constants = compute_constants;
+    state.compute_bind_group_0 = compute_bind_group_0;
+    state.compute_bind_group_1 = compute_bind_group_1;
+    state.compute_bind_group_2 = compute_bind_group_2;
+
+    blur_bind_group_layout0.release();
+    blur_bind_group_layout1.release();
+    sampler.release();
+    flip[0].release();
+    flip[1].release();
+
+    const blur_params_buffer_data = [_]u32{ filter_size, block_dimension };
+    core.queue.writeBuffer(blur_params_buffer, 0, &blur_params_buffer_data);
 
     const diffuse_color_target = gpu.ColorTargetState{
         .format = core.descriptor.format,
@@ -290,6 +369,7 @@ pub fn init(app: *App) !void {
                 gpu.BindGroup.Entry.buffer(0, state.uniform_buffer_final, 0, @sizeOf(FinalUniformObject)),
                 gpu.BindGroup.Entry.textureView(1, state.output_diffuse.view_handle),
                 gpu.BindGroup.Entry.sampler(2, state.output_diffuse.sampler_handle),
+                gpu.BindGroup.Entry.textureView(3, state.blur_textures[1].view_handle),
             },
         }),
     );
@@ -403,7 +483,36 @@ pub fn update(app: *App) !bool {
     const batcher_commands = try state.batcher.finish();
     defer batcher_commands.release();
 
-    core.queue.submit(&.{batcher_commands});
+    const encoder = core.device.createCommandEncoder(null);
+
+    const compute_pass = encoder.beginComputePass(null);
+    compute_pass.setPipeline(state.pipeline_blur);
+    compute_pass.setBindGroup(0, state.compute_constants, &.{});
+
+    const width: u32 = settings.design_width;
+    const height: u32 = settings.design_height;
+    compute_pass.setBindGroup(1, state.compute_bind_group_0, &.{});
+    compute_pass.dispatchWorkgroups(try std.math.divCeil(u32, width, block_dimension), try std.math.divCeil(u32, height, batch[1]), 1);
+
+    compute_pass.setBindGroup(1, state.compute_bind_group_1, &.{});
+    compute_pass.dispatchWorkgroups(try std.math.divCeil(u32, height, block_dimension), try std.math.divCeil(u32, width, batch[1]), 1);
+
+    var i: u32 = 0;
+    while (i < iterations - 1) : (i += 1) {
+        compute_pass.setBindGroup(1, state.compute_bind_group_2, &.{});
+        compute_pass.dispatchWorkgroups(try std.math.divCeil(u32, width, block_dimension), try std.math.divCeil(u32, height, batch[1]), 1);
+
+        compute_pass.setBindGroup(1, state.compute_bind_group_1, &.{});
+        compute_pass.dispatchWorkgroups(try std.math.divCeil(u32, height, block_dimension), try std.math.divCeil(u32, width, batch[1]), 1);
+    }
+    compute_pass.end();
+    compute_pass.release();
+
+    var command = encoder.finish(null);
+    encoder.release();
+
+    core.queue.submit(&.{ batcher_commands, command });
+    command.release();
     core.swap_chain.present();
 
     for (state.hotkeys.hotkeys) |*hotkey| {
@@ -424,6 +533,8 @@ pub fn deinit(_: *App) void {
     state.sounds.player.deinit();
     state.allocator.free(state.hotkeys.hotkeys);
     state.diffusemap.deinit();
+    state.blur_textures[0].deinit();
+    state.blur_textures[1].deinit();
     state.palette.deinit();
     state.output_diffuse.deinit();
     state.atlas.deinit(state.allocator);
