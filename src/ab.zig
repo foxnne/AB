@@ -32,6 +32,15 @@ pub const map = @import("map/map.zig");
 
 pub const components = @import("ecs/components/components.zig");
 
+// Constants from the blur.wgsl shader
+const tile_dimension: u32 = 128;
+const batch: [2]u32 = .{ 4, 4 };
+
+// Currently hardcoded
+const filter_size: u32 = 15;
+const iterations: u32 = 2;
+var block_dimension: u32 = tile_dimension - (filter_size - 1);
+
 test {
     _ = zstbi;
     _ = math;
@@ -60,6 +69,7 @@ pub const GameState = struct {
     pipeline_diffuse: *gpu.RenderPipeline = undefined,
     bind_group_final: *gpu.BindGroup = undefined,
     pipeline_final: *gpu.RenderPipeline = undefined,
+    pipeline_blur: *gpu.ComputePipeline = undefined,
     uniform_buffer_diffuse: *gpu.Buffer = undefined,
     uniform_buffer_final: *gpu.Buffer = undefined,
     output_diffuse: gfx.Texture = undefined,
@@ -70,6 +80,12 @@ pub const GameState = struct {
     world: *ecs.world_t = undefined,
     entities: Entities = .{},
     sounds: Sounds = .{},
+    blur_params_buffer: *gpu.Buffer = undefined,
+    compute_constants: *gpu.BindGroup = undefined,
+    compute_bind_group_0: *gpu.BindGroup = undefined,
+    compute_bind_group_1: *gpu.BindGroup = undefined,
+    compute_bind_group_2: *gpu.BindGroup = undefined,
+    blur_textures: [2]gfx.Texture = undefined,
 };
 
 pub const Entities = struct {
@@ -134,6 +150,10 @@ pub fn init(app: *App) !void {
         state.diffusemap = try gfx.Texture.loadFromFile(assets.ab_png.path, .{});
         state.atlas = try gfx.Atlas.loadFromFile(allocator, assets.ab_atlas.path);
         state.output_diffuse = try gfx.Texture.createEmpty(settings.design_width, settings.design_height, .{ .format = core.descriptor.format });
+
+        for (state.blur_textures, 0..) |_, i| {
+            state.blur_textures[i] = try gfx.Texture.createEmpty(settings.design_width, settings.design_height, .{ .storage_binding = true });
+        }
     }
 
     // Sounds
@@ -163,6 +183,7 @@ pub fn init(app: *App) !void {
 
     const diffuse_shader_module = core.device.createShaderModuleWGSL("diffuse.wgsl", @embedFile("shaders/diffuse.wgsl"));
     const final_shader_module = core.device.createShaderModuleWGSL("final.wgsl", @embedFile("shaders/final.wgsl"));
+    const blur_shader_module = core.device.createShaderModuleWGSL("blur.wgsl", @embedFile("shaders/blur.wgsl"));
 
     const vertex_attributes = [_]gpu.VertexAttribute{
         .{ .format = .float32x3, .offset = @offsetOf(gfx.Vertex, "position"), .shader_location = 0 },
@@ -188,6 +209,16 @@ pub fn init(app: *App) !void {
             .dst_factor = .one_minus_src_alpha,
         },
     };
+
+    const blur_pipeline_descriptor = gpu.ComputePipeline.Descriptor{
+        .compute = gpu.ProgrammableStageDescriptor{
+            .module = blur_shader_module,
+            .entry_point = "main",
+        },
+    };
+
+    state.pipeline_blur = core.device.createComputePipeline(&blur_pipeline_descriptor);
+    blur_shader_module.release();
 
     const diffuse_color_target = gpu.ColorTargetState{
         .format = core.descriptor.format,
