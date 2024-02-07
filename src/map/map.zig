@@ -126,7 +126,7 @@ pub fn load() void {
                 if (random.float(f32) > 0.85) {
                     const apple = ecs.new_id(game.state.world);
 
-                    _ = ecs.set(game.state.world, apple, game.components.Position, .{ .x = offset, .y = game.settings.ground_height + 64.0, .z = 0.0 });
+                    _ = ecs.set(game.state.world, apple, game.components.Position, .{ .x = offset, .y = game.settings.ground_height + 32.0, .z = -200.0 });
                     _ = ecs.set(game.state.world, apple, game.components.SpriteRenderer, .{
                         .index = game.assets.ab_atlas.apple_0_main,
                     });
