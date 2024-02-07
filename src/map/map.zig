@@ -46,7 +46,7 @@ pub fn load() void {
                 .index = sprite_index,
                 .flip_x = if (@mod(index, 4) == 0) true else false,
             });
-            _ = ecs.set(game.state.world, cloud, game.components.Scroll, .{ .width = width, .speed = 10.0, .wait_on_player = false });
+            _ = ecs.set(game.state.world, cloud, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.1, .wait_on_player = false });
         }
     }
 
@@ -109,7 +109,7 @@ pub fn load() void {
                 //.vert_mode = .top_sway,
                 .order = index,
             });
-            _ = ecs.set(game.state.world, pine_far, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.2 });
+            _ = ecs.set(game.state.world, pine_far, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.3 });
 
             const pine_mid = ecs.new_id(game.state.world);
 

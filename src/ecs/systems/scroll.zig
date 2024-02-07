@@ -27,10 +27,14 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
 
                     if (ecs.field(it, components.Position, 2)) |positions| {
                         if (positions[i].x <= -scrolls[i].width / 2.0) {
-                            positions[i].x = @floor(positions[i].x + scrolls[i].width);
+                            positions[i].x = positions[i].x + scrolls[i].width;
                         }
 
-                        positions[i].x = @floor(positions[i].x - (game.state.delta_time * scrolls[i].speed));
+                        positions[i].x = positions[i].x - (it.delta_time * scrolls[i].speed);
+
+                        if (scrolls[i].speed == game.settings.scroll_speed) {
+                            positions[i].x = @floor(positions[i].x);
+                        }
                     }
                 }
             }
