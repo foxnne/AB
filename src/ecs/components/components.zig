@@ -1,7 +1,6 @@
 const zmath = @import("zmath");
 const game = @import("../../ab.zig");
 
-pub const Visible = struct {};
 pub const Player = struct {
     state: State = .idle,
 
@@ -17,6 +16,9 @@ pub const Jump = struct {
     tail_offset: f32 = 0.0,
 };
 
+pub const Apple = struct {};
+pub const Boost = struct {};
+
 pub const Scroll = struct {
     speed: f32 = game.settings.scroll_speed,
     width: f32,
@@ -30,8 +32,7 @@ pub const Trigger = struct { direction: game.math.Direction };
 pub const Direction = game.math.Direction;
 pub const Rotation = struct { value: f32 = 0 };
 
-pub const Cooldown = struct { current: f32 = 0.0, end: f32 = 1.0 };
-pub const Parallax = struct { value: f32 = 0.0 }; // 1.0 means moves with camera
+pub const Cooldown = struct { current: f32 = 0.0, end: f32 = 5.0 };
 
 pub const Hitpoints = struct { value: usize = 0 };
 

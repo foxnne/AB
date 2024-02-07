@@ -30,9 +30,15 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             positions[i].x = positions[i].x + scrolls[i].width;
                         }
 
-                        positions[i].x = positions[i].x - (it.delta_time * scrolls[i].speed);
+                        var boost: f32 = 1.0;
 
-                        if (scrolls[i].speed == game.settings.scroll_speed) {
+                        if (ecs.has_pair(world, game.state.entities.player, ecs.id(components.Boost), ecs.id(components.Cooldown))) {
+                            boost = 2.0;
+                        }
+
+                        positions[i].x = positions[i].x - (it.delta_time * scrolls[i].speed * boost);
+
+                        if (scrolls[i].speed == game.settings.scroll_speed * boost) {
                             positions[i].x = @floor(positions[i].x);
                         }
                     }

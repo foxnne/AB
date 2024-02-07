@@ -30,6 +30,13 @@ pub var character_idle_tail = [_]usize {
     assets.ab_atlas.character_idle_6_tail,
     assets.ab_atlas.character_idle_7_tail,
 };
+pub var apple_tail = [_]usize {
+    assets.ab_atlas.apple_0_tail,
+    assets.ab_atlas.apple_1_tail,
+    assets.ab_atlas.apple_2_tail,
+    assets.ab_atlas.apple_3_tail,
+    assets.ab_atlas.apple_4_tail,
+};
 pub var character_run_tail = [_]usize {
     assets.ab_atlas.character_run_0_tail,
     assets.ab_atlas.character_run_1_tail,
@@ -45,6 +52,13 @@ pub var character_idle_main = [_]usize {
     assets.ab_atlas.character_idle_5_main,
     assets.ab_atlas.character_idle_6_main,
     assets.ab_atlas.character_idle_7_main,
+};
+pub var apple_main = [_]usize {
+    assets.ab_atlas.apple_0_main,
+    assets.ab_atlas.apple_1_main,
+    assets.ab_atlas.apple_2_main,
+    assets.ab_atlas.apple_3_main,
+    assets.ab_atlas.apple_4_main,
 };
 pub var character_run_main = [_]usize {
     assets.ab_atlas.character_run_0_main,

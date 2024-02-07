@@ -388,6 +388,8 @@ pub fn init(app: *App) !void {
     ecs.SYSTEM(state.world, "JumpSystem", ecs.OnUpdate, &jump_system);
     var scroll_system = @import("ecs/systems/scroll.zig").system();
     ecs.SYSTEM(state.world, "ScrollSystem", ecs.OnUpdate, &scroll_system);
+    var apple_system = @import("ecs/systems/apple.zig").system();
+    ecs.SYSTEM(state.world, "AppleSystem", ecs.OnUpdate, &apple_system);
 
     // - Animation
     var animation_sprite_system = @import("ecs/systems/animation_sprite.zig").system();

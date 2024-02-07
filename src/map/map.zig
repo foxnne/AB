@@ -10,7 +10,7 @@ pub fn load() void {
     const camera_tl = camera.screenToWorld(zm.f32x4s(0.0), camera_matrix);
     const camera_br = camera.screenToWorld(zm.f32x4(game.window_size[0], -game.window_size[1], 0, 0), camera_matrix);
 
-    const world_width = (camera_br[0] - camera_tl[0]) * 4.0;
+    const world_width = (camera_br[0] - camera_tl[0]) * 10.0;
 
     { // Create sun
 
@@ -122,29 +122,45 @@ pub fn load() void {
             });
             _ = ecs.set(game.state.world, pine_mid, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.5 });
 
-            if (random.float(f32) < 0.9 or (offset > camera_tl[0] + 128.0 and offset < camera_br[0] - 128.0)) continue;
+            if (random.float(f32) < 0.9 or (offset > camera_tl[0] + 128.0 and offset < camera_br[0] - 128.0)) {
+                if (random.float(f32) > 0.85) {
+                    const apple = ecs.new_id(game.state.world);
 
-            const trunk = ecs.new_id(game.state.world);
+                    _ = ecs.set(game.state.world, apple, game.components.Position, .{ .x = offset, .y = game.settings.ground_height + 64.0, .z = 0.0 });
+                    _ = ecs.set(game.state.world, apple, game.components.SpriteRenderer, .{
+                        .index = game.assets.ab_atlas.apple_0_main,
+                    });
+                    _ = ecs.set(game.state.world, apple, game.components.SpriteAnimator, .{
+                        .animation = &game.animations.apple_main,
+                        .fps = 8,
+                        .state = .play,
+                    });
+                    _ = ecs.set(game.state.world, apple, game.components.Scroll, .{ .width = world_width });
+                    ecs.add(game.state.world, apple, game.components.Apple);
+                }
+            } else {
+                const trunk = ecs.new_id(game.state.world);
 
-            _ = ecs.set(game.state.world, trunk, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = -100.0 });
-            _ = ecs.set(game.state.world, trunk, game.components.SpriteRenderer, .{
-                .index = game.assets.ab_atlas.pine_0_trunk,
-                .vert_mode = .top_sway,
-                .order = index,
-            });
-            _ = ecs.set(game.state.world, trunk, game.components.Scroll, .{ .width = width });
+                _ = ecs.set(game.state.world, trunk, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = -100.0 });
+                _ = ecs.set(game.state.world, trunk, game.components.SpriteRenderer, .{
+                    .index = game.assets.ab_atlas.pine_0_trunk,
+                    .vert_mode = .top_sway,
+                    .order = index,
+                });
+                _ = ecs.set(game.state.world, trunk, game.components.Scroll, .{ .width = width });
 
-            const leaves = ecs.new_id(game.state.world);
+                const leaves = ecs.new_id(game.state.world);
 
-            _ = ecs.set(game.state.world, leaves, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = -101.0 });
-            _ = ecs.set(game.state.world, leaves, game.components.SpriteRenderer, .{
-                .index = game.assets.ab_atlas.pine_0_needles,
-                .frag_mode = .palette,
-                .vert_mode = .top_sway,
-                .color = game.math.Color.initBytes(6, 0, 0, 255).toSlice(),
-                .order = index,
-            });
-            _ = ecs.set(game.state.world, leaves, game.components.Scroll, .{ .width = width });
+                _ = ecs.set(game.state.world, leaves, game.components.Position, .{ .x = offset, .y = game.settings.ground_height, .z = -101.0 });
+                _ = ecs.set(game.state.world, leaves, game.components.SpriteRenderer, .{
+                    .index = game.assets.ab_atlas.pine_0_needles,
+                    .frag_mode = .palette,
+                    .vert_mode = .top_sway,
+                    .color = game.math.Color.initBytes(6, 0, 0, 255).toSlice(),
+                    .order = index,
+                });
+                _ = ecs.set(game.state.world, leaves, game.components.Scroll, .{ .width = width });
+            }
         }
     }
 }
