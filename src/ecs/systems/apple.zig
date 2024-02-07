@@ -63,7 +63,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             if (player_tl[1] < renderer_br[1] or player_br[1] > renderer_tl[1]) continue;
 
                             if (ecs.field(it, components.Scroll, 4)) |scrolls| {
-                                positions[i].x += scrolls[i].width;
+                                positions[i].x -= scrolls[i].width / 2.0;
                                 _ = ecs.set_pair(world, game.state.entities.player, ecs.id(components.Boost), ecs.id(components.Cooldown), components.Cooldown, .{
                                     .end = 5.0,
                                 });

@@ -135,7 +135,7 @@ pub fn load() void {
                         .fps = 8,
                         .state = .play,
                     });
-                    _ = ecs.set(game.state.world, apple, game.components.Scroll, .{ .width = world_width });
+                    _ = ecs.set(game.state.world, apple, game.components.Scroll, .{ .width = width });
                     ecs.add(game.state.world, apple, game.components.Apple);
                 }
             } else {

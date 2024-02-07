@@ -27,7 +27,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
 
                     if (ecs.field(it, components.Position, 2)) |positions| {
                         if (positions[i].x <= -scrolls[i].width / 2.0) {
-                            positions[i].x = positions[i].x + scrolls[i].width;
+                            positions[i].x += scrolls[i].width;
                         }
 
                         var boost: f32 = 1.0;
