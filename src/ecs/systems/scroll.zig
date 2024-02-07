@@ -38,7 +38,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
 
                         positions[i].x = positions[i].x - (it.delta_time * scrolls[i].speed * boost);
 
-                        if (scrolls[i].speed == game.settings.scroll_speed * boost) {
+                        if (scrolls[i].speed == game.settings.scroll_speed) {
                             positions[i].x = @floor(positions[i].x);
                         }
                     }
