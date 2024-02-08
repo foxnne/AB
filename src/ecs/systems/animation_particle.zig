@@ -81,7 +81,9 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                                 velocity_y = rand.float(f32) * 40.0 - 20.0;
 
                             new_particle.velocity = .{ velocity_x, velocity_y };
-                            new_particle.index = animators[i].animation[0];
+                            //new_particle.index = animators[i].animation[0];
+
+                            new_particle.index = animators[i].animation[rand.intRangeAtMost(usize, 0, animators[i].animation.len - 1)];
 
                             renderers[i].particles[j] = new_particle;
 
