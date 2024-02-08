@@ -8,6 +8,7 @@ pub fn system() ecs.system_desc_t {
     var desc: ecs.system_desc_t = .{};
     desc.query.filter.terms[0] = .{ .id = ecs.id(components.Scroll) };
     desc.query.filter.terms[1] = .{ .id = ecs.id(components.Position) };
+    desc.query.filter.terms[2] = .{ .id = ecs.id(components.Speed), .oper = ecs.oper_kind_t.Optional };
     desc.run = run;
     return desc;
 }
@@ -15,7 +16,7 @@ pub fn system() ecs.system_desc_t {
 pub fn run(it: *ecs.iter_t) callconv(.C) void {
     const world = it.world;
 
-    if (ecs.get(world, game.state.entities.player, components.Player)) |player| {
+    if (ecs.get_mut(world, game.state.entities.player, components.Player)) |player| {
         while (ecs.iter_next(it)) {
             var i: usize = 0;
             while (i < it.count()) : (i += 1) {
@@ -36,7 +37,12 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             boost = 2.0;
                         }
 
-                        positions[i].x -= @ceil(it.delta_time * scrolls[i].speed * boost);
+                        const speed = @ceil(it.delta_time * scrolls[i].speed * boost);
+                        positions[i].x -= speed;
+
+                        if (ecs.field(it, components.Speed, 3)) |speeds| {
+                            speeds[i].value = speed;
+                        }
 
                         if (scrolls[i].speed == game.settings.scroll_speed) {
                             positions[i].x = @floor(positions[i].x);

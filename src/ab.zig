@@ -396,6 +396,8 @@ pub fn init(app: *App) !void {
     ecs.SYSTEM(state.world, "AnimationSpriteSystem", ecs.OnUpdate, &animation_sprite_system);
     var animation_player_system = @import("ecs/systems/animation_player.zig").system();
     ecs.SYSTEM(state.world, "AnimationPlayerSystem", ecs.OnUpdate, &animation_player_system);
+    var animation_particle_system = @import("ecs/systems/animation_particle.zig").system();
+    ecs.SYSTEM(state.world, "AnimationParticleSystem", ecs.OnUpdate, &animation_particle_system);
 
     // - Rendering
     var render_diffuse_system = @import("ecs/systems/render_diffuse_pass.zig").system();

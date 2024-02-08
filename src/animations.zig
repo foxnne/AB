@@ -8,6 +8,18 @@ pub var light_big_main = [_]usize {
 pub var light_small_main = [_]usize {
     assets.ab_atlas.light_small_0_main,
 };
+pub var grass_assorted_main = [_]usize {
+    assets.ab_atlas.grass_assorted_0_main,
+    assets.ab_atlas.grass_assorted_1_main,
+    assets.ab_atlas.grass_assorted_2_main,
+    assets.ab_atlas.grass_assorted_3_main,
+    assets.ab_atlas.grass_assorted_4_main,
+    assets.ab_atlas.grass_assorted_5_main,
+};
+pub var squares_main = [_]usize {
+    assets.ab_atlas.squares_0_main,
+    assets.ab_atlas.squares_1_main,
+};
 pub var oak_needles = [_]usize {
     assets.ab_atlas.oak_0_needles,
 };
@@ -69,14 +81,6 @@ pub var character_run_main = [_]usize {
 pub var ground_grass_main = [_]usize {
     assets.ab_atlas.ground_grass_0_main,
     assets.ab_atlas.ground_grass_1_main,
-};
-pub var grass_assorted_main = [_]usize {
-    assets.ab_atlas.grass_assorted_0_main,
-    assets.ab_atlas.grass_assorted_1_main,
-    assets.ab_atlas.grass_assorted_2_main,
-    assets.ab_atlas.grass_assorted_3_main,
-    assets.ab_atlas.grass_assorted_4_main,
-    assets.ab_atlas.grass_assorted_5_main,
 };
 pub var cloud_1_main = [_]usize {
     assets.ab_atlas.cloud_1_0_main,

@@ -60,6 +60,22 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                 const rotation = if (ecs.field(it, components.Rotation, 2)) |rotations| rotations[i].value else 0.0;
                 var position = positions[i].toF32x4();
 
+                if (ecs.field(it, components.ParticleRenderer, 4)) |renderers| {
+                    for (renderers[i].particles) |particle| {
+                        if (particle.alive()) {
+                            game.state.batcher.sprite(
+                                zm.f32x4(particle.position[0], particle.position[1], particle.position[2], 0),
+                                &game.state.diffusemap,
+                                game.state.atlas.sprites[particle.index],
+                                .{
+                                    .frag_mode = renderers[i].frag_mode,
+                                    .color = particle.color,
+                                },
+                            ) catch unreachable;
+                        }
+                    }
+                }
+
                 if (ecs.field(it, components.SpriteRenderer, 3)) |renderers| {
                     game.state.batcher.sprite(
                         position,
@@ -76,22 +92,6 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             .rotation = rotation,
                         },
                     ) catch unreachable;
-                }
-
-                if (ecs.field(it, components.ParticleRenderer, 4)) |renderers| {
-                    for (renderers[i].particles) |particle| {
-                        if (particle.alive()) {
-                            game.state.batcher.sprite(
-                                zm.f32x4(particle.position[0], particle.position[1], particle.position[2], 0),
-                                &game.state.diffusemap,
-                                game.state.atlas.sprites[particle.index],
-                                .{
-                                    .frag_mode = renderers[i].frag_mode,
-                                    .color = particle.color,
-                                },
-                            ) catch unreachable;
-                        }
-                    }
                 }
 
                 if (ecs.field(it, components.PlayerRenderer, 5)) |renderers| {

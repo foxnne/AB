@@ -137,6 +137,22 @@ pub fn load() void {
                     });
                     _ = ecs.set(game.state.world, apple, game.components.Scroll, .{ .width = width });
                     ecs.add(game.state.world, apple, game.components.Apple);
+
+                    ecs.add(game.state.world, apple, game.components.Speed);
+
+                    _ = ecs.set(game.state.world, apple, game.components.ParticleRenderer, .{
+                        .particles = game.state.allocator.alloc(game.components.ParticleRenderer.Particle, 50) catch unreachable,
+                    });
+
+                    _ = ecs.set(game.state.world, apple, game.components.ParticleAnimator, .{
+                        .animation = &game.animations.squares_main,
+                        .rate = 20.0,
+                        .velocity_min = .{ 0.0, 0.0 },
+                        .velocity_max = .{ 0.0, 0.0 },
+                        .start_color = game.math.Color.initFloats(1.0, 0.8, 0.3, 1.0).toSlice(),
+                        .end_color = game.math.Color.initFloats(1.0, 0.8, 0.3, 0.0).toSlice(),
+                        .start_life = 1.0,
+                    });
                 }
             } else {
                 const trunk = ecs.new_id(game.state.world);

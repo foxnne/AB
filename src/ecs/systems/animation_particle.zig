@@ -9,6 +9,7 @@ pub fn system() ecs.system_desc_t {
     desc.query.filter.terms[0] = .{ .id = ecs.id(components.ParticleAnimator) };
     desc.query.filter.terms[1] = .{ .id = ecs.id(components.ParticleRenderer) };
     desc.query.filter.terms[2] = .{ .id = ecs.id(components.Position) };
+    desc.query.filter.terms[3] = .{ .id = ecs.id(components.Speed), .oper = ecs.oper_kind_t.Optional };
     desc.run = run;
     return desc;
 }
@@ -48,9 +49,14 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             if (index < animators[i].animation.len)
                                 particle.index = animators[i].animation[index];
                             particle.color = color;
+
                             particle.position[0] += particle.velocity[0] * it.delta_time;
                             particle.position[1] += particle.velocity[1] * it.delta_time;
                             particle.position[2] += particle.velocity[1] * it.delta_time * 1.5;
+
+                            if (ecs.field(it, game.components.Speed, 4)) |speeds| {
+                                particle.position[0] -= speeds[i].value;
+                            }
                         } else if (particles_to_emit > 0) {
                             var new_particle: components.ParticleRenderer.Particle = .{};
                             new_particle.life = animators[i].start_life;
@@ -65,8 +71,14 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             const rand = prng.random();
                             const t = rand.float(f32);
 
-                            const velocity_x = game.math.lerp(animators[i].velocity_min[0], animators[i].velocity_max[0], t);
-                            const velocity_y = game.math.lerp(animators[i].velocity_min[1], animators[i].velocity_max[1], t);
+                            var velocity_x = game.math.lerp(animators[i].velocity_min[0], animators[i].velocity_max[0], t);
+                            var velocity_y = game.math.lerp(animators[i].velocity_min[1], animators[i].velocity_max[1], t);
+
+                            if (velocity_x == 0.0)
+                                velocity_x = rand.float(f32) * 40.0 - 20.0;
+
+                            if (velocity_y == 0.0)
+                                velocity_y = rand.float(f32) * 40.0 - 20.0;
 
                             new_particle.velocity = .{ velocity_x, velocity_y };
                             new_particle.index = animators[i].animation[0];

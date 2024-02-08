@@ -3,6 +3,7 @@ const game = @import("../../ab.zig");
 
 pub const Player = struct {
     state: State = .idle,
+    speed: f32 = 0.0,
 
     pub const State = enum {
         idle,
@@ -18,6 +19,10 @@ pub const Jump = struct {
 
 pub const Apple = struct {};
 pub const Boost = struct {};
+
+pub const Speed = struct {
+    value: f32 = 0.0,
+};
 
 pub const Scroll = struct {
     speed: f32 = game.settings.scroll_speed,
