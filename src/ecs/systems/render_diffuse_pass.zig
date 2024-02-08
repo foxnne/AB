@@ -24,7 +24,18 @@ pub fn system() ecs.system_desc_t {
 var time: f32 = 0.0;
 
 pub fn run(it: *ecs.iter_t) callconv(.C) void {
-    time += game.state.delta_time * 4.0;
+    if (ecs.get(it.world, game.state.entities.player, components.Player)) |player| {
+        if (player.state == .idle) {
+            time += game.state.delta_time * 4.0;
+        } else {
+            if (ecs.has_pair(it.world, game.state.entities.player, ecs.id(components.Boost), ecs.id(components.Cooldown))) {
+                time += game.state.delta_time * 16.0;
+            } else {
+                time += game.state.delta_time * 8.0;
+            }
+        }
+    }
+
     const uniforms = gfx.UniformBufferObject{ .mvp = zm.transpose(game.state.camera.renderTextureMatrix()) };
 
     const background: core.gpu.Color = .{

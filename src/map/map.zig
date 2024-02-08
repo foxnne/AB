@@ -90,7 +90,7 @@ pub fn load() void {
         }
     }
 
-    { // Create trees
+    { // Create trees and apples
         var rand = std.rand.DefaultPrng.init(1239848752);
         var random = rand.random();
 
@@ -109,7 +109,7 @@ pub fn load() void {
                 //.vert_mode = .top_sway,
                 .order = index,
             });
-            _ = ecs.set(game.state.world, pine_far, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.3 });
+            _ = ecs.set(game.state.world, pine_far, game.components.Scroll, .{ .width = width, .speed = game.settings.scroll_speed * 0.25 });
 
             const pine_mid = ecs.new_id(game.state.world);
 
