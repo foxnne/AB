@@ -421,6 +421,22 @@ pub fn init(app: *App) !void {
         .state = .play,
     });
     _ = ecs.set(state.world, state.entities.player, components.Direction, .e);
+
+    _ = ecs.set(state.world, state.entities.player, components.ParticleRenderer, .{
+        .particles = state.allocator.alloc(components.ParticleRenderer.Particle, 500) catch unreachable,
+        .offset = .{ -4.0, 4.0, 0.0, 0.0 },
+    });
+
+    _ = ecs.set(state.world, state.entities.player, components.ParticleAnimator, .{
+        .animation = &animations.squares_main,
+        .rate = 50.0,
+        .velocity_min = .{ -100.0, -20.0 },
+        .velocity_max = .{ -200.0, 20.0 },
+        .start_color = math.Color.initFloats(1.0, 0.8, 0.3, 1.0).toSlice(),
+        .end_color = math.Color.initFloats(1.0, 0.8, 0.3, 0.0).toSlice(),
+        .start_life = 1.0,
+        .state = .pause,
+    });
 }
 
 pub fn updateMainThread(_: *App) !bool {

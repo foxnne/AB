@@ -23,12 +23,22 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                 if (cooldowns[i].current >= cooldowns[i].end) {
                     const pair_id = ecs.field_id(it, 1);
                     ecs.remove_id(world, entity, pair_id);
+                    if (ecs.get_mut(world, game.state.entities.player, components.ParticleAnimator)) |particles| {
+                        particles.state = .pause;
+                    }
                 } else if (cooldowns[i].current >= cooldowns[i].end - it.delta_time) {
                     cooldowns[i].current = cooldowns[i].end;
                     const pair_id = ecs.field_id(it, 1);
                     ecs.remove_id(world, entity, pair_id);
+
+                    if (ecs.get_mut(world, game.state.entities.player, components.ParticleAnimator)) |particles| {
+                        particles.state = .pause;
+                    }
                 } else {
                     cooldowns[i].current += it.delta_time;
+                    if (ecs.get_mut(world, game.state.entities.player, components.ParticleAnimator)) |particles| {
+                        particles.state = .play;
+                    }
                 }
             }
         }
