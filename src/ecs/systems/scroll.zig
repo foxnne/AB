@@ -37,7 +37,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             boost = 2.0;
                         }
 
-                        const speed = @ceil(it.delta_time * scrolls[i].speed * boost);
+                        const speed = it.delta_time * scrolls[i].speed * boost;
                         positions[i].x -= speed;
 
                         if (ecs.field(it, components.Speed, 3)) |speeds| {
