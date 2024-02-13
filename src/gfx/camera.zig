@@ -12,8 +12,7 @@ pub const Camera = struct {
     culling_margin: f32 = 256.0,
 
     pub fn init(position: zm.F32x4) Camera {
-        const zooms = zm.ceil(zm.f32x4(game.window_size[0], game.window_size[1], 0, 0) / game.settings.design_size);
-        const zoom = @max(zooms[0], zooms[1]) + 1.0 * game.content_scale[0]; // Initially set the zoom to be 1 step greater than minimum.
+        const zoom = minZoom();
 
         return .{
             .zoom = zoom,
@@ -59,7 +58,7 @@ pub const Camera = struct {
     /// Returns the minimum zoom needed to render to the window without black bars.
     pub fn minZoom() f32 {
         const zoom = zm.ceil(zm.f32x4(game.window_size[0], game.window_size[1], 0.0, 0.0) / game.settings.design_size);
-        return @max(zoom[0], zoom[1]) * game.content_scale[0];
+        return @max(zoom[0], zoom[1]) * game.content_scale[0] + 1.0;
     }
 
     /// Returns the maximum zoom allowed for the current window size.
