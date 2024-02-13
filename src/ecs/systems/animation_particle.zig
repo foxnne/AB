@@ -55,7 +55,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             particle.position[2] += particle.velocity[1] * it.delta_time * 1.5;
 
                             if (ecs.field(it, game.components.Speed, 4)) |speeds| {
-                                particle.position[0] -= @ceil(speeds[i].value);
+                                particle.position[0] -= speeds[i].value;
                             }
                         } else if (particles_to_emit > 0) {
                             var new_particle: components.ParticleRenderer.Particle = .{};

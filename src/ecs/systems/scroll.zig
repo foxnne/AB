@@ -34,7 +34,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                         var boost: f32 = 1.0;
 
                         if (ecs.has_pair(world, game.state.entities.player, ecs.id(components.Boost), ecs.id(components.Cooldown))) {
-                            boost = 2.0;
+                            boost = 1.5;
                         }
 
                         const speed = it.delta_time * scrolls[i].speed * boost;
@@ -42,10 +42,6 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
 
                         if (ecs.field(it, components.Speed, 3)) |speeds| {
                             speeds[i].value = speed;
-                        }
-
-                        if (scrolls[i].speed == game.settings.scroll_speed) {
-                            positions[i].x = @floor(positions[i].x);
                         }
                     }
                 }

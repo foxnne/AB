@@ -18,4 +18,4 @@ pub const cloud_spacing: f32 = 240.0;
 /// Height where ground sits
 pub const ground_height: f32 = -48.0;
 
-pub const scroll_speed: f32 = 100.0;
+pub const scroll_speed: f32 = 100.0 * 2.0;

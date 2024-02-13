@@ -59,6 +59,8 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
             if (ecs.field(it, components.Position, 1)) |positions| {
                 const rotation = if (ecs.field(it, components.Rotation, 2)) |rotations| rotations[i].value else 0.0;
                 var position = positions[i].toF32x4();
+                position[0] = @floor(position[0]);
+                position[1] = @floor(position[1]);
 
                 if (ecs.field(it, components.ParticleRenderer, 4)) |renderers| {
                     for (renderers[i].particles) |particle| {
