@@ -31,7 +31,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                             positions[i].x += scrolls[i].width;
                         }
 
-                        var boost: f32 = 1.0;
+                        var boost: f32 = 0.8;
 
                         if (ecs.has_pair(world, game.state.entities.player, ecs.id(components.Boost), ecs.id(components.Cooldown))) {
                             boost = 1.5;

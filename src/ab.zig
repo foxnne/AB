@@ -476,14 +476,12 @@ pub fn update(app: *App) !bool {
                 return true;
             },
             .framebuffer_resize => |size| {
-                const descriptor = core.descriptor;
-                window_size = .{ @floatFromInt(size.width), @floatFromInt(size.height) };
-                framebuffer_size = .{ @floatFromInt(descriptor.width), @floatFromInt(descriptor.height) };
+                window_size = .{ @floatFromInt(core.size().width), @floatFromInt(core.size().height) };
+                framebuffer_size = .{ @floatFromInt(size.width), @floatFromInt(size.height) };
                 content_scale = .{
                     framebuffer_size[0] / window_size[0],
                     framebuffer_size[1] / window_size[1],
                 };
-
                 state.camera.zoom = gfx.Camera.minZoom();
             },
             else => {},
