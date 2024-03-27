@@ -31,7 +31,7 @@ pub fn load() void {
     }
 
     { // Create clouds
-        var count: usize = @intFromFloat(@ceil(world_width / game.settings.cloud_spacing));
+        const count: usize = @intFromFloat(@ceil(world_width / game.settings.cloud_spacing));
         const width = @as(f32, @floatFromInt(count)) * game.settings.cloud_spacing;
 
         for (0..count) |index| {
@@ -51,7 +51,7 @@ pub fn load() void {
     }
 
     { // Create ground tiles
-        var count: usize = @intFromFloat(@ceil(world_width / game.settings.tile_size));
+        const count: usize = @intFromFloat(@ceil(world_width / game.settings.tile_size));
         const width = @as(f32, @floatFromInt(count)) * game.settings.tile_size;
 
         for (0..count) |index| {
@@ -71,7 +71,7 @@ pub fn load() void {
     }
 
     { // Create grass
-        var count: usize = @intFromFloat(@ceil(world_width / 10.0));
+        const count: usize = @intFromFloat(@ceil(world_width / 10.0));
         const width = @as(f32, @floatFromInt(count)) * 10.0;
 
         for (0..count) |index| {
@@ -94,7 +94,7 @@ pub fn load() void {
         var rand = std.rand.DefaultPrng.init(1239848752);
         var random = rand.random();
 
-        var count: usize = @intFromFloat(@ceil(world_width / game.settings.tile_size));
+        const count: usize = @intFromFloat(@ceil(world_width / game.settings.tile_size));
         const width = @as(f32, @floatFromInt(count)) * game.settings.tile_size;
 
         for (0..count) |index| {

@@ -33,7 +33,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
 
                         var boost: f32 = 0.8;
 
-                        if (ecs.has_pair(world, game.state.entities.player, ecs.id(components.Boost), ecs.id(components.Cooldown))) {
+                        if (ecs.has_pair(world, game.state.entities.player, ecs.id(components.Cooldown), ecs.id(components.Boost))) {
                             boost = 1.5;
                         }
 

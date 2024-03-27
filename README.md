@@ -10,7 +10,7 @@ All assets are included, check `assets/src` for Pixi files for the artwork.
 
 ### Building
 
-Install zig using *zigup* `zigup 0.12.0-dev.1092+68ed78775` or manually and add to PATH.
+Install zig using *zigup* `zigup 0.12.0-dev.3180+83e578a18` or manually and add to PATH.
 
 To build, simply:
 - `git clone https://github.com/foxnne/AB.git`

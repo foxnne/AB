@@ -8,25 +8,21 @@
     .name = "ab",
     .version = "0.1.0",
     .dependencies = .{
-        .mach_core = .{
-            .url = "https://pkg.machengine.org/mach-core/90c927e20d045035152d9b0b421ea45db7e5569c.tar.gz",
-            .hash = "12209c255c69822b57cd8906754bbee815e69678741d48a64e945168e611874da662",
+        .mach = .{
+            .url = "https://pkg.machengine.org/mach/279290bbf2f1adab0af00323280a07d6bfff47a5.tar.gz",
+            .hash = "1220ba5472217ef81455b19d540967049bbfaf768b30d04534865707e907ee1c4aec",
         },
-        .mach_opus = .{
-            .url = "https://pkg.machengine.org/mach-opus/05852d86b926243b448fdab4aa561fb88ac7f9b8.tar.gz",
-            .hash = "12205815b5b72d73c09bfb344f499b5e3ea1212bdf9ef168722dbaedba963a0887c4",
+        .zflecs = .{
+            .url = "https://github.com/foxnne/zflecs/archive/f78f4f17527fce2867b580c88e441880b3875b32.tar.gz",
+            .hash = "1220ca6986000ebcfc2276df3b9e482a64daa7c8cb365e26a06e02259574e13eb105",
         },
-        .opusfile = .{
-            .url = "https://pkg.machengine.org/opusfile/234b8f39f232a61a6c901f62044ca97590bfd725.tar.gz",
-            .hash = "12203293a3503683ee57c0f348899ab1f6d2c6aa7a84e8bbfd4df46a9c8faa7ba305",
+        .zstbi = .{
+            .url = "https://github.com/foxnne/zstbi/archive/731369dfcdf3f23965e4e5d924d1e1e6fbf23aa9.tar.gz",
+            .hash = "12201163a30d7d3f4fd80d5c18a0e06edfdfa052961e43f4fb49b8d36638f807d18d",
         },
-        .mach_sysaudio = .{
-            .url = "https://pkg.machengine.org/mach-sysaudio/f987d55fefbb7b7ef5c742ad2e64db68a5a2110d.tar.gz",
-            .hash = "1220539dbe43f4651bac0495175d5567661c8b9c323fb4fbea9aa1de67a2a7b26566",
-        },
-        .linux_audio_headers = .{
-            .url = "https://pkg.machengine.org/linux-audio-headers/6b182ff9d51009ca903f3bac63777fbfa654e5f5.tar.gz",
-            .hash = "122052c4415f4d5be98e3324083939af644d5f8eddd2e6a1a544596645eda8cf411a",
+        .zmath = .{
+            .url = "https://github.com/foxnne/zmath/archive/ecfdbf57c6fd0a8ac8a9bf01dafe1e5adae869ae.tar.gz",
+            .hash = "1220a105762825631ef4dfd4730109120600bba51368f1207fc63b7536333c5748c3",
         },
     },
 }

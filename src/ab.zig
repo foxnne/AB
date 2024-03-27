@@ -1,14 +1,12 @@
 const std = @import("std");
 
-const core = @import("mach-core");
+const mach = @import("mach");
+const core = mach.core;
 const gpu = core.gpu;
 
 const zstbi = @import("zstbi");
 const zmath = @import("zmath");
 const ecs = @import("zflecs");
-
-const sysaudio = @import("mach-sysaudio");
-const Opus = @import("mach-opus");
 
 pub const App = @This();
 
@@ -79,7 +77,6 @@ pub const GameState = struct {
     batcher: gfx.Batcher = undefined,
     world: *ecs.world_t = undefined,
     entities: Entities = .{},
-    sounds: Sounds = .{},
     blur_params_buffer: *gpu.Buffer = undefined,
     compute_constants: *gpu.BindGroup = undefined,
     compute_bind_group_0: *gpu.BindGroup = undefined,
@@ -90,12 +87,6 @@ pub const GameState = struct {
 
 pub const Entities = struct {
     player: usize = 0,
-};
-
-pub const Sounds = struct {
-    player: sysaudio.Player = undefined,
-    ctx: sysaudio.Context = undefined,
-    device: sysaudio.Device = undefined,
 };
 
 pub const Channel = enum(i32) {
@@ -154,19 +145,6 @@ pub fn init(app: *App) !void {
         for (state.blur_textures, 0..) |_, i| {
             state.blur_textures[i] = try gfx.Texture.createEmpty(settings.design_width, settings.design_height, .{ .storage_binding = true });
         }
-    }
-
-    // Sounds
-    {
-        state.sounds.ctx = try sysaudio.Context.init(null, allocator, .{});
-        try state.sounds.ctx.refresh();
-
-        state.sounds.device = state.sounds.ctx.defaultDevice(.playback) orelse return error.NoDevice;
-
-        state.sounds.player = try state.sounds.ctx.createPlayer(state.sounds.device, writeCallback, .{});
-
-        try state.sounds.player.start();
-        try state.sounds.player.setVolume(0.5);
     }
 
     // Input and Rendering
@@ -541,8 +519,6 @@ pub fn update(app: *App) !bool {
 }
 
 pub fn deinit(_: *App) void {
-    state.sounds.ctx.deinit();
-    state.sounds.player.deinit();
     state.allocator.free(state.hotkeys.hotkeys);
     state.diffusemap.deinit();
     state.blur_textures[0].deinit();

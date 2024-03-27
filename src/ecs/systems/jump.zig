@@ -34,14 +34,16 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
                     } else {
                         if (ecs.field(it, components.Player, 3)) |players| {
                             players[i].state = .jump;
-                        }
+                        } 
                     }
 
                     if (jumps[i].elapsed <= 0.5) {
-                        positions[i].y = game.math.ease(game.settings.ground_height, game.settings.ground_height + 64.0, jumps[i].elapsed * 2.0, .ease_out);
+                        const offset = game.math.ease(game.settings.ground_height, game.settings.ground_height + 64.0, jumps[i].elapsed * 2.0, .ease_out);
+                        positions[i].y = offset;
                         jumps[i].tail_offset = -2.5;
                     } else {
-                        positions[i].y = game.math.ease(game.settings.ground_height + 64.0, game.settings.ground_height, (jumps[i].elapsed - 0.5) * 2.0, .ease_in);
+                        const offset = game.math.ease(game.settings.ground_height + 64.0, game.settings.ground_height, (jumps[i].elapsed - 0.5) * 2.0, .ease_in);
+                        positions[i].y = offset;
                         jumps[i].tail_offset = 2.5;
                     }
                 }
