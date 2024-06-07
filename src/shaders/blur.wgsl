@@ -36,9 +36,10 @@ fn main(
 ) {
   let filterOffset = (params.filterDim - 1) / 2;
   let dims = vec2<i32>(textureDimensions(inputTex, 0));
-  let baseIndex = vec2<i32>(WorkGroupID.xy * vec2(params.blockDim, 4) +
-                            LocalInvocationID.xy * vec2(4, 1))
-                  - vec2(filterOffset, 0);
+  let baseIndex_x = i32((WorkGroupID.x * params.blockDim + LocalInvocationID.x * 4));
+  let baseIndex_y = i32(WorkGroupID.y * 4 + LocalInvocationID.y * 1);
+
+  let baseIndex = vec2<i32>(baseIndex_x - filterOffset, baseIndex_y);
 
   for (var r = 0; r < 4; r++) {
     for (var c = 0; c < 4; c++) {

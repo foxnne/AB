@@ -1,8 +1,11 @@
 const std = @import("std");
+const build_options = @import("build-options");
 
 const mach = @import("mach");
 const core = mach.core;
-const gpu = core.gpu;
+const gpu = mach.gpu;
+
+pub const use_sysgpu = build_options.use_sysgpu;
 
 const zstbi = @import("zstbi");
 const zmath = @import("zmath");
@@ -232,7 +235,10 @@ pub fn init(app: *App) !void {
         .layout = blur_bind_group_layout0,
         .entries = &.{
             gpu.BindGroup.Entry.sampler(0, sampler),
-            gpu.BindGroup.Entry.buffer(1, blur_params_buffer, 0, 8),
+            if (use_sysgpu)
+                gpu.BindGroup.Entry.buffer(1, blur_params_buffer, 0, 8, 0)
+            else
+                gpu.BindGroup.Entry.buffer(1, blur_params_buffer, 0, 8),
         },
     }));
 
@@ -241,7 +247,10 @@ pub fn init(app: *App) !void {
         .entries = &.{
             gpu.BindGroup.Entry.textureView(1, state.output_diffuse.view_handle),
             gpu.BindGroup.Entry.textureView(2, state.blur_textures[0].view_handle),
-            gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4),
+            if (use_sysgpu)
+                gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4, 0)
+            else
+                gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4),
         },
     }));
 
@@ -250,7 +259,10 @@ pub fn init(app: *App) !void {
         .entries = &.{
             gpu.BindGroup.Entry.textureView(1, state.blur_textures[0].view_handle),
             gpu.BindGroup.Entry.textureView(2, state.blur_textures[1].view_handle),
-            gpu.BindGroup.Entry.buffer(3, flip[1], 0, 4),
+            if (use_sysgpu)
+                gpu.BindGroup.Entry.buffer(3, flip[1], 0, 4, 0)
+            else
+                gpu.BindGroup.Entry.buffer(3, flip[1], 0, 4),
         },
     }));
 
@@ -259,7 +271,10 @@ pub fn init(app: *App) !void {
         .entries = &.{
             gpu.BindGroup.Entry.textureView(1, state.blur_textures[1].view_handle),
             gpu.BindGroup.Entry.textureView(2, state.blur_textures[0].view_handle),
-            gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4),
+            if (use_sysgpu)
+                gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4, 0)
+            else
+                gpu.BindGroup.Entry.buffer(3, flip[0], 0, 4),
         },
     }));
 
@@ -305,7 +320,10 @@ pub fn init(app: *App) !void {
         &gpu.BindGroup.Descriptor.init(.{
             .layout = state.pipeline_diffuse.getBindGroupLayout(0),
             .entries = &.{
-                gpu.BindGroup.Entry.buffer(0, state.uniform_buffer_diffuse, 0, @sizeOf(gfx.UniformBufferObject)),
+                if (use_sysgpu)
+                    gpu.BindGroup.Entry.buffer(0, state.uniform_buffer_diffuse, 0, @sizeOf(gfx.UniformBufferObject), 0)
+                else
+                    gpu.BindGroup.Entry.buffer(0, state.uniform_buffer_diffuse, 0, @sizeOf(gfx.UniformBufferObject)),
                 gpu.BindGroup.Entry.textureView(1, state.diffusemap.view_handle),
                 gpu.BindGroup.Entry.textureView(2, state.palette.view_handle),
                 gpu.BindGroup.Entry.sampler(3, state.diffusemap.sampler_handle),
@@ -344,7 +362,10 @@ pub fn init(app: *App) !void {
         &gpu.BindGroup.Descriptor.init(.{
             .layout = state.pipeline_final.getBindGroupLayout(0),
             .entries = &.{
-                gpu.BindGroup.Entry.buffer(0, state.uniform_buffer_final, 0, @sizeOf(FinalUniformObject)),
+                if (use_sysgpu)
+                    gpu.BindGroup.Entry.buffer(0, state.uniform_buffer_final, 0, @sizeOf(FinalUniformObject), 0)
+                else
+                    gpu.BindGroup.Entry.buffer(0, state.uniform_buffer_final, 0, @sizeOf(FinalUniformObject)),
                 gpu.BindGroup.Entry.textureView(1, state.output_diffuse.view_handle),
                 gpu.BindGroup.Entry.sampler(2, state.output_diffuse.sampler_handle),
                 gpu.BindGroup.Entry.textureView(3, state.blur_textures[1].view_handle),

@@ -3,6 +3,10 @@ const std = @import("std");
 
 pub const root = "assets/";
 
+pub const palettes = "assets/palettes/";
+
+pub const themes = "assets/themes/";
+
 pub const ab_atlas = struct {
   pub const path = "assets/ab.atlas";
   pub const character_idle_0_tail = 0;

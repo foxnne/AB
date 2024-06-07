@@ -40,7 +40,7 @@ pub fn run(it: *ecs.iter_t) callconv(.C) void {
 
     const uniforms = gfx.UniformBufferObject{ .mvp = zm.transpose(game.state.camera.renderTextureMatrix()) };
 
-    const background: core.gpu.Color = .{
+    const background: mach.gpu.Color = .{
         .r = 0.5,
         .g = 1.0,
         .b = 1.0,
